@@ -221,7 +221,7 @@
     </style>
   </head>
   <body>
-    <img src="download.jpeg" alt="GIET University Logo" class="header-logo" />
+    <img src="download.png" alt="GIET University Logo" class="header-logo" />
     <div id="root"></div>
 
     <script type="text/babel">
@@ -490,7 +490,8 @@
             }}
           >
             <div style={{ fontSize: "6rem", fontFamily: "monospace" }}>
-              {formatTime(seconds)}
+              {" "}
+              {formatTime(seconds)}{" "}
             </div>
             <div style={{ display: "flex", gap: "1rem" }}>
               <button className="main-button" onClick={toggle}>
@@ -523,6 +524,9 @@
 
         useEffect(() => {
           // This logic runs once on page load to create the random groups
+          let studentPool = [...allStudents];
+
+          // 1. Create Saree Group (High Priority)
           const mandatorySareeIds = [
             "24ECE059",
             "24ECE091",
@@ -530,23 +534,51 @@
             "24ECE118",
             "24ECE120",
           ];
-          const mandatorySareeMembers = allStudents.filter((s) =>
+          const mandatorySareeMembers = studentPool.filter((s) =>
             mandatorySareeIds.includes(s.id)
           );
-          const randomPool = shuffleArray(
-            allStudents.filter((s) => !mandatorySareeIds.includes(s.id))
+          let remainingPoolForSaree = shuffleArray(
+            studentPool.filter((s) => !mandatorySareeIds.includes(s.id))
           );
-          const additionalSareeMembers = randomPool.slice(0, 7);
+          const additionalSareeMembers = remainingPoolForSaree.slice(0, 7);
           const finalSareeGroup = [
             ...mandatorySareeMembers,
             ...additionalSareeMembers,
           ];
+
+          // Remove saree group members from the main pool
           const sareeGroupIds = finalSareeGroup.map((s) => s.id);
-          let remainingPool = allStudents.filter(
+          studentPool = studentPool.filter(
             (s) => !sareeGroupIds.includes(s.id)
           );
+
+          // 2. Create Drinks Group (Second Priority)
+          const mandatoryDrinksId = "24ECEVLSI014";
+          const mandatoryDrinksMember = studentPool.find(
+            (s) => s.id === mandatoryDrinksId
+          );
+          let finalDrinksGroup = [];
+          if (mandatoryDrinksMember) {
+            // Remove the mandatory member from the pool
+            studentPool = studentPool.filter((s) => s.id !== mandatoryDrinksId);
+            const remainingPoolForDrinks = shuffleArray(studentPool);
+            const additionalDrinksMembers = remainingPoolForDrinks.slice(0, 11);
+            finalDrinksGroup = [
+              mandatoryDrinksMember,
+              ...additionalDrinksMembers,
+            ];
+            // Remove the chosen random members from the main pool
+            const additionalDrinksIds = additionalDrinksMembers.map(
+              (s) => s.id
+            );
+            studentPool = studentPool.filter(
+              (s) => !additionalDrinksIds.includes(s.id)
+            );
+          }
+
+          // 3. Create Girl-Only Groups
           const girlsPool = shuffleArray(
-            remainingPool.filter((s) => s.gender === "F")
+            studentPool.filter((s) => s.gender === "F")
           );
           const balloonGroup = girlsPool.slice(0, 14);
           const emojiGroup = girlsPool.slice(14);
@@ -554,14 +586,16 @@
             ...balloonGroup.map((s) => s.id),
             ...emojiGroup.map((s) => s.id),
           ];
-          remainingPool = remainingPool.filter(
-            (s) => !girlGroupIds.includes(s.id)
-          );
-          let shuffledBoys = shuffleArray(remainingPool);
+          studentPool = studentPool.filter((s) => !girlGroupIds.includes(s.id));
+
+          // 4. Create Make-up Group
+          let shuffledBoys = shuffleArray(studentPool);
           const makeupGroup = shuffledBoys.slice(0, 8);
           shuffledBoys = shuffledBoys.slice(8);
+
+          // 5. Create the rest of the groups
           const otherGroups = [];
-          const otherEventsCount = 8;
+          const otherEventsCount = 7; // 7 remaining events for boys
           const baseGroupSize = Math.floor(
             shuffledBoys.length / otherEventsCount
           );
@@ -574,20 +608,23 @@
             );
             currentIndex += size;
           }
+
+          // 6. Set the final event order
           const eventOrder = [
             { event: "Biscuit", members: otherGroups[0] },
             { event: "Balloon (for girls)", members: balloonGroup },
-            { event: "Avengers iconic dialogue", members: otherGroups[1] },
+            { event: "Rumali dance", members: otherGroups[1] },
+            { event: "Avengers iconic dialogue", members: otherGroups[2] },
             { event: "Make-Up", members: makeupGroup },
-            { event: "Rumali dance", members: otherGroups[2] },
             { event: "Laughter ride", members: otherGroups[3] },
-            { event: "One leg stand", members: otherGroups[4] },
-            { event: "Emoji expression (for girls)", members: emojiGroup },
-            { event: "Plank", members: otherGroups[5] },
             { event: "Saree", members: finalSareeGroup },
+            { event: "Emoji expression (for girls)", members: emojiGroup },
+            { event: "Plank", members: otherGroups[4] },
+            { event: "One leg stand", members: otherGroups[5] },
             { event: "Pole dance", members: otherGroups[6] },
-            { event: "Drinks", members: otherGroups[7] },
+            { event: "Drinks", members: finalDrinksGroup },
           ];
+
           setGroups(eventOrder);
         }, []);
 
@@ -627,7 +664,8 @@
                 className="main-button"
                 onClick={() => setIsTimerOpen(true)}
               >
-                Set Timer
+                {" "}
+                Set Timer{" "}
               </button>
             </div>
 
@@ -668,7 +706,8 @@
                   {countdownSeconds === null ? (
                     <div className="timer-input-container">
                       <label htmlFor="minutes">
-                        Set Timer Duration (in minutes):
+                        {" "}
+                        Set Timer Duration (in minutes):{" "}
                       </label>
                       <input
                         type="number"

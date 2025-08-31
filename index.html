@@ -14,7 +14,12 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
         
         body {
-            background-color: #0a0a0a;
+            /* --- Background Image Added --- */
+            background-image: linear-gradient(rgba(10, 10, 10, 0.9), rgba(10, 10, 10, 0.9)), url('https://images.unsplash.com/photo-1635805737707-575885ab0820?q=80&w=1887&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            
             color: #f5f5f5;
             font-family: 'Inter', sans-serif;
             margin: 0;
@@ -28,12 +33,38 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            position: relative;
+        }
+
+        .header-logo {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            width: 150px;
+            opacity: 0.8;
+        }
+        
+        @media (max-width: 640px) {
+            .header-logo {
+                width: 100px;
+                top: 1rem;
+                left: 1rem;
+            }
         }
 
         h1 {
             font-size: 2.5rem;
             font-weight: 700;
-            margin-bottom: 1.5rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #ccc;
+            margin-top: 0;
+            margin-bottom: 2.5rem;
             text-align: center;
         }
 
@@ -66,7 +97,7 @@
         .main-button:disabled { background-color: #555; color: #999; cursor: not-allowed; }
 
         .current-team-container {
-            background-color: #1a1a1a;
+            background-color: rgba(26, 26, 26, 0.9);
             border: 1px solid #333;
             border-radius: 0.75rem;
             padding: 1.5rem 2rem;
@@ -74,6 +105,7 @@
             max-width: 800px;
             margin-top: 1rem;
             animation: fadeIn 0.5s ease-out;
+            backdrop-filter: blur(5px);
         }
 
         .current-team-container h2 {
@@ -92,6 +124,7 @@
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background-color: rgba(0, 0, 0, 0.8);
             display: flex; align-items: center; justify-content: center; z-index: 50;
+            backdrop-filter: blur(5px);
         }
 
         .dialog-content {
@@ -123,6 +156,7 @@
     </style>
 </head>
 <body>
+    <img src="https://giet.edu/giet_university/images/logo.png" alt="GIET University Logo" class="header-logo" />
     <div id="root"></div>
 
     <script type="text/babel">
@@ -322,6 +356,8 @@
             return (
                 <React.Fragment>
                     <h1>Gratus 2k25 – Team Chooser</h1>
+                    <p className="subtitle">Department of ECE, GIET University</p>
+
                     <div className="controls-container">
                         <button className="main-button" onClick={chooseNextTeam} disabled={groups.length === 0 || groupIndex >= groups.length}>
                             <ShuffleIcon /> 

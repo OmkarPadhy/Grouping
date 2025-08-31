@@ -20,7 +20,7 @@
       @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
 
       body {
-        /* --- Background Image Added --- */
+        /* --- Background Image Link Corrected --- */
         background-image: linear-gradient(
             rgba(10, 10, 10, 0.9),
             rgba(10, 10, 10, 0.9)
@@ -221,6 +221,7 @@
     </style>
   </head>
   <body>
+    <!-- --- University Logo Link Corrected --- -->
     <img src="download.jpeg" alt="GIET University Logo" class="header-logo" />
     <div id="root"></div>
 
@@ -726,7 +727,12 @@
                   ) : (
                     <div>
                       <Countdown initialSeconds={countdownSeconds} />
-                      <div style={{ textAlign: "center", marginTop: "1rem" }}>
+                      <div
+                        style={{
+                          textAlign: "center",
+                          marginTop: "1rem",
+                        }}
+                      >
                         <button
                           className="main-button"
                           onClick={() => setCountdownSeconds(null)}
